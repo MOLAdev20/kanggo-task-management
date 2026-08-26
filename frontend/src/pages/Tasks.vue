@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Axios from "axios";
 import { ref, computed, onMounted } from "vue";
 import axios from "../utilities/axios";
 
@@ -33,7 +32,18 @@ const filteredTasks = computed(() => {
   });
 });
 
-onMounted(() => {});
+onMounted(() => {
+  axios.get(
+    "tasks",
+    {
+      params: { user_id: 1 },
+    },
+    (data: Task[]) => {
+      tasks.value = data;
+      console.log(tasks.value);
+    },
+  );
+});
 
 // Modal & Form State Management
 const isModalOpen = ref(false);
@@ -62,18 +72,63 @@ const closeModal = () => {
 
 const saveTask = () => {
   if (isEditing.value) {
-    // Logic Update
-    const index = tasks.value.findIndex((t) => t.id === seletedTaskId.value);
-    console.log(index);
+    axios.put(
+      `tasks/${seletedTaskId.value}`,
+      {
+        title: inputTitle.value,
+        description: inputDescription.value,
+        deadline: inputDeadline.value,
+        status: inputStatus.value,
+      },
+      (data: { message: string; task: any }) => {
+        const { id, title, description, deadline } = data.task;
+        tasks.value = tasks.value.map((task) => {
+          if (task.id === id) {
+            task.title = title;
+            task.description = description;
+            task.deadline = deadline;
+            task.status = inputStatus.value;
+          }
+          return task;
+        });
+      },
+      (err: any) => {
+        console.log(err);
+      },
+    );
   } else {
     // Logic Create
-    console.log("Task dibuat");
+    axios.post(
+      "tasks/",
+      {
+        user_id: 1,
+        title: inputTitle.value,
+        description: inputDescription.value,
+        deadline: inputDeadline.value,
+      },
+      (data: { message: string; task: any }) => {
+        const { id, title, description, deadline } = data.task;
+
+        tasks.value.push({
+          id,
+          title,
+          description,
+          deadline,
+          status: "PENDING",
+        });
+      },
+      (err: any) => {
+        console.log(err);
+      },
+    );
   }
   closeModal();
 };
 
 const deleteTask = (id: number) => {
-  console.log(id);
+  axios.delete(`tasks/${id}`, (err: any) => {
+    tasks.value = tasks.value.filter((task) => task.id !== id);
+  });
 };
 </script>
 
@@ -278,7 +333,7 @@ const deleteTask = (id: number) => {
             {{ isEditing ? "Edit Tugas" : "Tambah Tugas" }}
           </h2>
 
-          <div @submit.prevent="saveTask" class="space-y-4 text-sm">
+          <div class="space-y-4 text-sm">
             <div>
               <label class="block font-bold mb-1 text-xs">Judul</label>
               <input
@@ -333,7 +388,7 @@ const deleteTask = (id: number) => {
                 Batal
               </button>
               <button
-                type="submit"
+                @click="saveTask"
                 class="flex-1 bg-[#FFD000] border-2 border-black py-2 font-bold shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:translate-x-px hover:translate-y-px hover:shadow-none transition-all"
               >
                 Simpan

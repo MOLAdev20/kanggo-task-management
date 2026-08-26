@@ -2,23 +2,6 @@ import { type Request, type Response } from "express";
 import { prisma } from "../lib/prisma";
 
 export default {
-  delete: async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id) as number;
-
-      await prisma.task.delete({
-        where: { id },
-      });
-
-      res.json({
-        message: "task-deleted",
-      });
-    } catch (err: any) {
-      res.status(500).json({
-        message: "internal-server-error",
-      });
-    }
-  },
   getByUser: async (req: Request, res: Response) => {
     try {
       const user_id = Number(req.query.user_id);
@@ -80,7 +63,24 @@ export default {
 
       res.json({
         message: "task-updated",
-        data: updatedTask,
+        task: updatedTask,
+      });
+    } catch (err: any) {
+      res.status(500).json({
+        message: "internal-server-error",
+      });
+    }
+  },
+  delete: async (req: Request, res: Response) => {
+    try {
+      const id = Number(req.params.id) as number;
+
+      await prisma.task.delete({
+        where: { id },
+      });
+
+      res.json({
+        message: "task-deleted",
       });
     } catch (err: any) {
       res.status(500).json({
