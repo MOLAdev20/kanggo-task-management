@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "target": "esnext",
-    "module": "nodenext",
+    "target": "es2023",
+    "moduleResolution": "bundler",
+    "module": "esnext",
     "rewriteRelativeImportExtensions": true,
     "erasableSyntaxOnly": true,
     "verbatimModuleSyntax": true,
+    "esModuleInterop": true,
     "noEmit": true,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "ignoreDeprecations": "6.0"
   }
 }
