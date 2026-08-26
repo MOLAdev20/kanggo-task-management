@@ -1,8 +1,10 @@
 import { Router } from "express";
 import authRoute from "./auth.route.ts";
+import tasksRoute from "./tasks.route.ts";
 
-const routes = Router();
+const router = Router();
 
-routes.use("/auth", authRoute);
+router.use("/auth", authRoute);
+router.use("/tasks", tasksRoute);
 
-export default routes;
+export default router;
