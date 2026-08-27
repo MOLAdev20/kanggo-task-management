@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import type { Task } from "../../../types/task";
+import { X } from "@lucide/vue";
 
 const props = defineProps<{
   isModalOpen: boolean;
@@ -49,9 +50,9 @@ const inputStatus = computed({
       >
         <button
           @click="emit('close')"
-          class="absolute top-4 right-4 font-bold text-2xl hover:text-red-500 leading-none"
+          class="absolute top-4 right-4 font-bold text-2xl hover:text-red-500 leading-none cursor-pointer"
         >
-          &times;
+          <X />
         </button>
         <div class="mb-5">
           <h2 class="text-xl font-extrabold">
