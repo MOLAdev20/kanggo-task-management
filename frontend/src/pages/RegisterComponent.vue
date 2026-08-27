@@ -138,7 +138,7 @@ const handleRegister = () => {
               @click="handleRegister"
               class="btn-press w-full bg-(--yellow) border-[3px] border-(--ink) hard-shadow-sm text-(--ink) font-display font-bold text-[15px] py-2.5 mt-2"
             >
-              Masuk
+              Daftar
             </button>
           </div>
         </div>

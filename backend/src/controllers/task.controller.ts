@@ -38,7 +38,7 @@ export default {
       };
       const taskPage = await prisma.task.findMany({
         where,
-        orderBy: { id: "asc" },
+        orderBy: { id: "desc" },
         take: limit + 1,
         ...(cursor && { cursor: { id: cursor }, skip: 1 }),
       });
@@ -71,7 +71,7 @@ export default {
           user_id,
           title: title,
           description: description && description,
-          deadline: deadline && new Date(deadline),
+          deadline: deadline ? new Date(deadline) : null,
         },
       });
 
