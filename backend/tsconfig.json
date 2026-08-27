@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
+    "rootDir": "./src",
     "target": "es2023",
     "moduleResolution": "bundler",
     "module": "esnext",
@@ -8,9 +9,10 @@
     "erasableSyntaxOnly": true,
     "verbatimModuleSyntax": true,
     "esModuleInterop": true,
-    "noEmit": true,
+    "noEmit": false,
     "strict": true,
     "skipLibCheck": true,
     "ignoreDeprecations": "6.0"
-  }
+  },
+  "include": ["src/**/*"]
 }

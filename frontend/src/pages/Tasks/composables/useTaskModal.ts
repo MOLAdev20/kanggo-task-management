@@ -58,9 +58,9 @@ export function useTaskModal(tasks: Ref<Task[]>) {
                 ...updatedTask,
               };
             }
-            closeModal();
             return task;
           });
+          closeModal();
         },
         (err: any) => {
           if (err.response.status === 400) {
