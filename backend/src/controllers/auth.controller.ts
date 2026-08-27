@@ -35,9 +35,15 @@ const endpoint = {
         },
       });
 
+      const jwtToken = await jwt.sign({
+        user_id: newUser.id,
+        email: newUser.email,
+      });
+
       res.json({
         message: "user-created",
         newUser,
+        token: jwtToken,
       });
     } catch (err: any) {
       res.status(500).json({

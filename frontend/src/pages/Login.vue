@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch, onMounted } from "vue";
 import axios from "../utilities/axios";
 import { useRouter } from "vue-router";
 const email = ref<string>("");
 const password = ref<string>("");
+const errorMessage = ref<string>("");
 
 interface Token {
   message: string;
@@ -11,8 +12,19 @@ interface Token {
 }
 
 const router = useRouter();
+onMounted(() => {
+  document.title = "Login | Kanggo Task Management";
+});
+
+watch([email, password], () => {
+  errorMessage.value = "";
+});
 
 const handleLogin = () => {
+  if (email.value === "" || password.value === "") {
+    errorMessage.value = "Email dan password harus diisi";
+    return;
+  }
   axios.post(
     "auth/login",
     {
@@ -26,7 +38,9 @@ const handleLogin = () => {
       });
     },
     (err: any) => {
-      console.log(err);
+      if (err.response.status === 401) {
+        errorMessage.value = "Email atau password salah";
+      }
     },
   );
 };
@@ -46,22 +60,14 @@ const handleLogin = () => {
           >
             Masuk Akun
           </span>
-          <h1
+          <div
             class="font-display font-bold text-(--ink) text-3xl sm:text-4xl leading-[1.1] mt-6"
           >
-            Semua kerjaanmu,<br />satu tempat rapi.
-          </h1>
-          <p class="text-[15px] leading-relaxed text-(--ink)/80 mt-4 max-w-xs">
-            Masuk buat lanjutin progres, pantau aktivitas, dan atur semuanya
-            dari satu dashboard.
-          </p>
-        </div>
-
-        <!-- signature element: tumpukan kotak -->
-        <div class="hidden md:flex items-end gap-2 mt-8" aria-hidden="true">
-          <div class="w-9 h-9 bg-(--ink)"></div>
-          <div class="w-9 h-9 bg-white border-[3px] border-(--ink)"></div>
-          <div class="w-9 h-9 bg-(--blue)"></div>
+            <img
+              src="https://www.kanggo.id/images/kanggo-logo-new-red.png"
+              width="100%"
+            /><br />
+          </div>
         </div>
       </section>
 
@@ -82,7 +88,6 @@ const handleLogin = () => {
             </label>
             <input
               :type="'email'"
-              required
               :placeholder="'mail@example.com'"
               v-model="email"
               class="w-full border-[3px] border-(--ink) px-3.5 py-2.5 text-[15px] placeholder:text-(--ink)/35 focus:outline-none"
@@ -100,18 +105,24 @@ const handleLogin = () => {
             </div>
             <input
               :type="'password'"
-              required
               v-model="password"
               class="w-full border-[3px] border-(--ink) px-3.5 py-2.5 text-[15px] placeholder:text-(--ink)/35 focus:outline-none"
             />
           </div>
-
-          <button
-            @click="handleLogin"
-            class="btn-press w-full bg-(--yellow) border-[3px] border-(--ink) hard-shadow-sm text-(--ink) font-display font-bold text-[15px] py-2.5 mt-2"
-          >
-            Masuk
-          </button>
+          <div>
+            <p
+              v-if="errorMessage != ''"
+              class="text-red-500 text-sm font-semibold"
+            >
+              {{ errorMessage }}
+            </p>
+            <button
+              @click="handleLogin"
+              class="btn-press w-full bg-(--yellow) border-[3px] border-(--ink) hard-shadow-sm text-(--ink) font-display font-bold text-[15px] py-2.5 mt-2"
+            >
+              Masuk
+            </button>
+          </div>
         </div>
 
         <p class="text-[14px] text-(--ink)/70 mt-7">
