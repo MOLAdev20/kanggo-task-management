@@ -1,4 +1,47 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref, onMounted } from "vue";
+import axios from "../utilities/axios";
+import { useRouter } from "vue-router";
+
+const name = ref<string>("");
+const email = ref<string>("");
+const password = ref<string>("");
+const errorMessage = ref<string>("");
+
+onMounted(() => {
+  document.title = "Daftar Akun | Kanggo Task Management";
+});
+
+const router = useRouter();
+const handleRegister = () => {
+  if (name.value === "" || email.value === "" || password.value === "") {
+    errorMessage.value = "Semua field harus diisi!";
+    return;
+  }
+
+  axios.post(
+    "auth/register",
+    {
+      name: name.value,
+      email: email.value,
+      password: password.value,
+    },
+    ({ token }: any) => {
+      localStorage.setItem("token", token);
+      router.replace({
+        name: "task",
+      });
+    },
+    (err: any) => {
+      if (err.response.status === 409) {
+        errorMessage.value = "Email tersebut sudah terdaftar";
+      } else {
+        errorMessage.value = "Terjadi kesalahan, coba refresh dulu";
+      }
+    },
+  );
+};
+</script>
 <template>
   <div class="min-h-screen flex items-center justify-center p-4 sm:p-8">
     <div
@@ -14,22 +57,14 @@
           >
             Daftar Akun
           </span>
-          <h1
+          <div
             class="font-display font-bold text-(--ink) text-3xl sm:text-4xl leading-[1.1] mt-6"
           >
-            Semua kerjaanmu,<br />satu tempat rapi.
-          </h1>
-          <p class="text-[15px] leading-relaxed text-(--ink)/80 mt-4 max-w-xs">
-            Masuk buat lanjutin progres, pantau aktivitas, dan atur semuanya
-            dari satu dashboard.
-          </p>
-        </div>
-
-        <!-- signature element: tumpukan kotak -->
-        <div class="hidden md:flex items-end gap-2 mt-8" aria-hidden="true">
-          <div class="w-9 h-9 bg-(--ink)"></div>
-          <div class="w-9 h-9 bg-white border-[3px] border-(--ink)"></div>
-          <div class="w-9 h-9 bg-(--blue)"></div>
+            <img
+              src="https://www.kanggo.id/images/kanggo-logo-new-red.png"
+              width="100%"
+            />
+          </div>
         </div>
       </section>
 
@@ -39,10 +74,26 @@
           Daftar Akun
         </h2>
         <p class="text-sm text-(--ink)/60 mt-1.5 mb-7">
-          Masukkan email dan password kamu.
+          Buat akun untuk mulai beraktivitas
         </p>
 
-        <form class="space-y-5" autocomplete="on">
+        <div class="space-y-5">
+          <div>
+            <label
+              for="name"
+              class="block text-[13px] font-semibold text-(--ink) mb-1.5"
+            >
+              Nama Lengkap
+            </label>
+            <input
+              v-model="name"
+              id="name"
+              type="text"
+              placeholder="Nama Lengkap"
+              class="w-full border-[3px] border-(--ink) px-3.5 py-2.5 text-[15px] placeholder:text-(--ink)/35 focus:outline-none"
+            />
+          </div>
+
           <div>
             <label
               for="email"
@@ -51,12 +102,10 @@
               Email
             </label>
             <input
+              v-model="email"
               id="email"
-              name="email"
               type="email"
-              required
-              autocomplete="email"
-              placeholder="nama@email.com"
+              placeholder="mail@example.com"
               class="w-full border-[3px] border-(--ink) px-3.5 py-2.5 text-[15px] placeholder:text-(--ink)/35 focus:outline-none"
             />
           </div>
@@ -69,31 +118,30 @@
               >
                 Password
               </label>
-              <a
-                href="#"
-                class="text-[12.5px] font-medium text-(--blue) hover:underline"
-              >
-                Lupa password?
-              </a>
             </div>
             <input
+              v-model="password"
               id="password"
-              name="password"
               type="password"
-              required
-              autocomplete="current-password"
-              placeholder="••••••••"
               class="w-full border-[3px] border-(--ink) px-3.5 py-2.5 text-[15px] placeholder:text-(--ink)/35 focus:outline-none"
             />
           </div>
 
-          <button
-            type="submit"
-            class="btn-press w-full bg-(--yellow) border-[3px] border-(--ink) hard-shadow-sm text-(--ink) font-display font-bold text-[15px] py-2.5 mt-2"
-          >
-            Masuk
-          </button>
-        </form>
+          <div>
+            <p
+              v-if="errorMessage != ''"
+              class="text-red-500 text-sm font-semibold"
+            >
+              {{ errorMessage }}
+            </p>
+            <button
+              @click="handleRegister"
+              class="btn-press w-full bg-(--yellow) border-[3px] border-(--ink) hard-shadow-sm text-(--ink) font-display font-bold text-[15px] py-2.5 mt-2"
+            >
+              Masuk
+            </button>
+          </div>
+        </div>
 
         <p class="text-[14px] text-(--ink)/70 mt-7">
           Sudah punya akun?
