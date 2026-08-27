@@ -3,7 +3,7 @@ import app from "./app.ts";
 
 app.get("/", (req: Request, res: Response) => {
   res.json({
-    message: "Hello World",
+    message: "hello-world!",
   });
 });
 
