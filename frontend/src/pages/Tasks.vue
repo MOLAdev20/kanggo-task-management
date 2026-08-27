@@ -120,7 +120,7 @@ const saveTask = () => {
 };
 
 const deleteTask = (id: number) => {
-  axios.delete(`tasks/${id}`, (err: any) => {
+  axios.delete(`tasks/${id}`, () => {
     tasks.value = tasks.value.filter((task) => task.id !== id);
   });
 };
