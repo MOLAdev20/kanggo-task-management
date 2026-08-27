@@ -1,38 +1,26 @@
 import { type Request, type Response, type NextFunction } from "express";
 import jwt from "../lib/jwt";
 
-export interface AuthenticatedRequest extends Request {
-  user: {
-    id: string;
-    email: string;
-  };
-}
-
 export default async (req: Request, res: Response, next: NextFunction) => {
   try {
     const authorization = req.headers.authorization;
 
     if (!authorization)
-      return res.status(400).json({
-        message: "unauthorized",
+      return res.status(401).json({
+        message: "header-not-provided",
       });
 
-    const token = authorization.split(" ");
+    const token = authorization.split(" ")[1];
 
-    if (!process.env.SECRET_KEY) throw new Error();
+    const payload = await jwt.verify(token);
 
-    const verify = await jwt.verify(token[1]);
+    if (!payload) throw new Error();
 
-    if (!verify)
-      return res.status(400).json({
-        message: "unauthorized",
-      });
-
-    req.user = verify as AuthenticatedRequest["user"];
+    req.user = payload as any;
     next();
   } catch (err: any) {
-    return res.status(500).json({
-      message: "internal-server-error",
+    return res.status(401).json({
+      message: "unauthorized",
     });
   }
 };

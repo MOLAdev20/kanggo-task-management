@@ -3,14 +3,23 @@ import { prisma } from "../lib/prisma";
 
 export default {
   getByUser: async (req: Request, res: Response) => {
+    const user_id = Number(req.user?.user_id);
+    console.log(user_id);
     try {
-      const user_id = Number(req.query.user_id);
-
       const tasks = await prisma.task.findMany({
         where: { user_id },
       });
 
-      res.json(tasks);
+      if (tasks.length === 0) {
+        return res.status(404).json({
+          message: "tasks-not-found",
+        });
+      }
+
+      res.json({
+        message: "tasks-found",
+        tasks,
+      });
     } catch (err: any) {
       res.status(500).json({
         message: "internal-server-error",
@@ -21,7 +30,7 @@ export default {
   create: async (req: Request, res: Response) => {
     try {
       const { title, description, deadline } = req.body;
-      const user_id = Number(req.body.user_id);
+      const user_id = Number(req.user?.user_id);
 
       if (!title)
         return res.status(400).json({ message: "missing-required-field" });

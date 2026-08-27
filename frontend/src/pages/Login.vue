@@ -1,4 +1,36 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from "vue";
+import axios from "../utilities/axios";
+import { useRouter } from "vue-router";
+const email = ref<string>("");
+const password = ref<string>("");
+
+interface Token {
+  message: string;
+  token: string;
+}
+
+const router = useRouter();
+
+const handleLogin = () => {
+  axios.post(
+    "auth/login",
+    {
+      email: email.value,
+      password: password.value,
+    },
+    ({ token }: Token) => {
+      localStorage.setItem("token", token);
+      router.replace({
+        name: "task",
+      });
+    },
+    (err: any) => {
+      console.log(err);
+    },
+  );
+};
+</script>
 <template>
   <div class="min-h-screen flex items-center justify-center p-4 sm:p-8">
     <div
@@ -40,7 +72,7 @@
           Masukkan email dan password kamu.
         </p>
 
-        <form class="space-y-5" autocomplete="on">
+        <div class="space-y-5">
           <div>
             <label
               for="email"
@@ -49,12 +81,10 @@
               Email
             </label>
             <input
-              id="email"
-              name="email"
-              type="email"
+              :type="'email'"
               required
-              autocomplete="email"
-              placeholder="nama@email.com"
+              :placeholder="'mail@example.com'"
+              v-model="email"
               class="w-full border-[3px] border-(--ink) px-3.5 py-2.5 text-[15px] placeholder:text-(--ink)/35 focus:outline-none"
             />
           </div>
@@ -75,23 +105,20 @@
               </a>
             </div>
             <input
-              id="password"
-              name="password"
-              type="password"
+              :type="'password'"
               required
-              autocomplete="current-password"
-              placeholder="••••••••"
+              v-model="password"
               class="w-full border-[3px] border-(--ink) px-3.5 py-2.5 text-[15px] placeholder:text-(--ink)/35 focus:outline-none"
             />
           </div>
 
           <button
-            type="submit"
+            @click="handleLogin"
             class="btn-press w-full bg-(--yellow) border-[3px] border-(--ink) hard-shadow-sm text-(--ink) font-display font-bold text-[15px] py-2.5 mt-2"
           >
             Masuk
           </button>
-        </form>
+        </div>
 
         <p class="text-[14px] text-(--ink)/70 mt-7">
           Belum punya akun?

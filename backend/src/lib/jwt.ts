@@ -1,8 +1,22 @@
-import jwt from "jsonwebtoken";
+import jwt, { type SignOptions } from "jsonwebtoken";
 
-const verify = async (token: string) => {
-  if (!process.env.SECRET_KEY) return;
-  return await jwt.verify(token, process.env.SECRET_KEY);
+interface Payload {
+  user_id: number;
+  email: string;
+}
+
+const secret = process.env.JWT_SECRET_KEY;
+
+const sign = async (payload: Payload) => {
+  if (secret === undefined) throw new Error();
+  return jwt.sign(payload, secret as string, {
+    expiresIn: process.env.JWT_EXPIRED_DURATION as SignOptions["expiresIn"],
+  });
 };
 
-export default { verify };
+const verify = async (token: string) => {
+  if (secret === undefined) throw new Error();
+  return jwt.verify(token, secret);
+};
+
+export default { sign, verify };

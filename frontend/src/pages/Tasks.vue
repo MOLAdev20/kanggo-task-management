@@ -33,16 +33,10 @@ const filteredTasks = computed(() => {
 });
 
 onMounted(() => {
-  axios.get(
-    "tasks",
-    {
-      params: { user_id: 1 },
-    },
-    (data: Task[]) => {
-      tasks.value = data;
-      console.log(tasks.value);
-    },
-  );
+  axios.get("tasks", null, (data: Task[]) => {
+    tasks.value = data;
+    console.log(tasks.value);
+  });
 });
 
 // Modal & Form State Management
@@ -126,7 +120,7 @@ const saveTask = () => {
 };
 
 const deleteTask = (id: number) => {
-  axios.delete(`tasks/${id}`, (err: any) => {
+  axios.delete(`tasks/${id}`, () => {
     tasks.value = tasks.value.filter((task) => task.id !== id);
   });
 };

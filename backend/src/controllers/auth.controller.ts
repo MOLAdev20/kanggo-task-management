@@ -1,7 +1,7 @@
 import { type Request, type Response } from "express";
 import { prisma } from "../lib/prisma";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import jwt from "../lib/jwt";
 
 const endpoint = {
   register: async (req: Request, res: Response) => {
@@ -61,46 +61,34 @@ const endpoint = {
         where: { email },
       });
 
-      if (!registeredUser)
-        return res.status(404).json({ message: "user-not-found" });
+      if (!registeredUser) throw new Error("unauthorized");
 
       const verifyPassword = await bcrypt.compare(
         password,
         registeredUser.password,
       );
 
-      if (!verifyPassword) {
-        return res.status(404).json({
-          message: "authentication-failed",
-        });
+      if (!verifyPassword) throw new Error("unauthorized");
+
+      const token = await jwt.sign({
+        user_id: registeredUser.id,
+        email: registeredUser.email,
+      });
+
+      res.json({
+        message: "authentication-success",
+        token,
+      });
+    } catch (err: any) {
+      let message = "unauthorized";
+      let status = 401;
+      if (err.message !== "unauthorized") {
+        message = "internal-server-error";
+        status = 500;
       }
 
-      const secrectKey = process.env.SECRET_KEY;
-      if (!secrectKey) throw new Error();
-
-      jwt.sign(
-        {
-          id: registeredUser.id,
-          email: registeredUser.email,
-        },
-        secrectKey,
-        {
-          expiresIn: "15m",
-        },
-
-        (err, token) => {
-          if (err) throw new Error();
-          res.json({
-            user: {
-              message: "user-authenticated",
-              token: token,
-            },
-          });
-        },
-      );
-    } catch (err: any) {
-      res.status(500).json({
-        message: "internal-server-error",
+      res.status(status).json({
+        message: message,
       });
     }
   },
