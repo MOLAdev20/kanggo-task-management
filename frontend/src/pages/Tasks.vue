@@ -33,16 +33,10 @@ const filteredTasks = computed(() => {
 });
 
 onMounted(() => {
-  axios.get(
-    "tasks",
-    {
-      params: { user_id: 1 },
-    },
-    (data: Task[]) => {
-      tasks.value = data;
-      console.log(tasks.value);
-    },
-  );
+  axios.get("tasks", null, (data: Task[]) => {
+    tasks.value = data;
+    console.log(tasks.value);
+  });
 });
 
 // Modal & Form State Management

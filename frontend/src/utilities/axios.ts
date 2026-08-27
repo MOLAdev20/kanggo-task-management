@@ -1,6 +1,7 @@
 import Axios from "axios";
 
 const apiUrl = import.meta.env.VITE_API_URL;
+const jwtToken = localStorage.getItem("token");
 export default {
   get: async (
     endpoint: string,
@@ -10,7 +11,12 @@ export default {
   ) => {
     try {
       const url = `${apiUrl}/api/${endpoint}`;
-      const response = await Axios.get(url, param != null && param);
+      const response = await Axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+        ...(param && { params: param }),
+      });
       successCb(response.data);
     } catch (err: any) {
       errorCb(err);
