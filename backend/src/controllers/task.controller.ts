@@ -96,7 +96,7 @@ export default {
         data: {
           title,
           description,
-          deadline: deadline && new Date(deadline),
+          deadline: deadline ? new Date(deadline) : null,
           status: status,
         },
       });

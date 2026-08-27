@@ -58,10 +58,18 @@ export function useTaskModal(tasks: Ref<Task[]>) {
                 ...updatedTask,
               };
             }
+            closeModal();
             return task;
           });
         },
-        (err: any) => console.log(err),
+        (err: any) => {
+          if (err.response.status === 400) {
+            errorMessage.value = "Judul tugas wajib diisi";
+          } else {
+            errorMessage.value = "Terjadi kesalahan";
+          }
+          console.log(err);
+        },
       );
     } else {
       axios.post(
@@ -74,11 +82,18 @@ export function useTaskModal(tasks: Ref<Task[]>) {
         },
         (data: { message: string; task: any }) => {
           tasks.value.unshift(data.task as Task);
+          closeModal();
         },
-        (err: any) => console.log(err),
+        (err: any) => {
+          if (err.response.status === 400) {
+            errorMessage.value = "Judul tugas wajib diisi";
+          } else {
+            errorMessage.value = "Terjadi kesalahan";
+          }
+          console.log(err);
+        },
       );
     }
-    closeModal();
   };
 
   return {

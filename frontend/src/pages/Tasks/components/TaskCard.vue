@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { SquarePen, Trash2 } from "@lucide/vue";
 import type { Task } from "../../../types/task";
 
 const props = defineProps<{
@@ -53,37 +54,15 @@ const emit = defineEmits(["openModal", "deleteTask"]);
           <div class="flex gap-2 justify-end mt-2">
             <button
               @click="emit('openModal', task)"
-              class="bg-white border-2 border-black p-1.5 shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:translate-x-px hover:translate-y-px hover:shadow-none transition-all flex items-center justify-center h-8 w-8"
+              class="bg-white border-2 border-black p-1.5 shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:translate-x-px hover:translate-y-px hover:shadow-none transition-all flex items-center justify-center cursor-pointer h-8 w-8"
             >
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="square"
-                  stroke-width="2"
-                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                ></path>
-              </svg>
+              <SquarePen />
             </button>
             <button
               @click="emit('deleteTask', task.id)"
-              class="bg-red-500 text-white border-2 border-black p-1.5 shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:translate-x-px hover:translate-y-px hover:shadow-none transition-all flex items-center justify-center h-8 w-8"
+              class="bg-red-500 text-white border-2 border-black p-1.5 shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:translate-x-px hover:translate-y-px hover:shadow-none transition-all flex items-center justify-center cursor-pointer h-8 w-8"
             >
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="square"
-                  stroke-width="2"
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                ></path>
-              </svg>
+              <Trash2 />
             </button>
           </div>
         </div>
