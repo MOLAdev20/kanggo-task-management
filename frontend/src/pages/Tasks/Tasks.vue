@@ -8,6 +8,7 @@ import { useTopbarLayout } from "./composables/useTopbar";
 import { useTasks } from "./composables/useTask";
 import { useTaskModal } from "./composables/useTaskModal";
 import ModalForm from "./components/ModalForm.vue";
+import { Plus } from "@lucide/vue";
 
 onMounted(() => {
   document.title = "Tugas Saya | Kanggo Task Management";
@@ -112,20 +113,9 @@ const {
       <!-- Floating Action Button (FAB) -->
       <button
         @click="openModal()"
-        class="fixed bottom-8 right-8 w-12 h-12 bg-[#FFD000] border-2 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] flex items-center justify-center hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all rounded-full z-40"
+        class="fixed bottom-8 right-8 p-2 bg-[#FFD000] border-2 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] flex items-center justify-center hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all rounded-full cursor-pointer z-40"
       >
-        <svg
-          class="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="square"
-            stroke-width="3"
-            d="M12 4v16m8-8H4"
-          ></path>
-        </svg>
+        <Plus /> Tambah Tugas
       </button>
     </main>
 

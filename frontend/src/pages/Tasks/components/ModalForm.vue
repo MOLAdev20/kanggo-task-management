@@ -57,7 +57,10 @@ const inputStatus = computed({
           <h2 class="text-xl font-extrabold">
             {{ props.isEditing ? "Edit Tugas" : "Tambah Tugas" }}
           </h2>
-          <p v-if="props.errorMessage != ''" class="text-xs font-medium text-red-500">
+          <p
+            v-if="props.errorMessage != ''"
+            class="text-xs font-medium text-red-500"
+          >
             {{ props.errorMessage }}
           </p>
         </div>
@@ -112,13 +115,13 @@ const inputStatus = computed({
             <button
               type="button"
               @click="emit('close')"
-              class="flex-1 bg-white border-2 border-black py-2 font-bold shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:translate-x-px hover:translate-y-px hover:shadow-none transition-all"
+              class="flex-1 bg-white border-2 border-black py-2 font-bold shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:translate-x-px hover:translate-y-px hover:shadow-none transition-all cursor-pointer"
             >
               Batal
             </button>
             <button
               @click="emit('save')"
-              class="flex-1 bg-[#FFD000] border-2 border-black py-2 font-bold shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:translate-x-px hover:translate-y-px hover:shadow-none transition-all"
+              class="flex-1 bg-[#FFD000] border-2 border-black py-2 font-bold shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:translate-x-px hover:translate-y-px hover:shadow-none transition-all cursor-pointer"
             >
               Simpan
             </button>
