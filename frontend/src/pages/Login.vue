@@ -97,12 +97,6 @@ const handleLogin = () => {
               >
                 Password
               </label>
-              <a
-                href="#"
-                class="text-[12.5px] font-medium text-(--blue) hover:underline"
-              >
-                Lupa password?
-              </a>
             </div>
             <input
               :type="'password'"

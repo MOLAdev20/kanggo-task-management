@@ -1,24 +1,55 @@
 import { type Request, type Response } from "express";
+import { Prisma, TaskStatus } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
 
 export default {
   getByUser: async (req: Request, res: Response) => {
     const user_id = Number(req.user?.user_id);
-    console.log(user_id);
     try {
-      const tasks = await prisma.task.findMany({
-        where: { user_id },
-      });
+      const statusParam =
+        typeof req.query.status === "string"
+          ? req.query.status.toLowerCase()
+          : "all";
+      const title =
+        typeof req.query.title === "string" ? req.query.title.trim() : "";
 
-      if (tasks.length === 0) {
-        return res.status(404).json({
-          message: "tasks-not-found",
-        });
-      }
+      const statusMap = {
+        pending: TaskStatus.PENDING,
+        "in-progress": TaskStatus.IN_PROGRESS,
+        done: TaskStatus.DONE,
+      } as const;
+
+      const status = statusMap[statusParam as keyof typeof statusMap];
+
+      const requestedLimit = Number(req.query.limit);
+      const limit = Number.isInteger(requestedLimit)
+        ? Math.min(Math.max(requestedLimit, 1), 100)
+        : 10;
+      const requestedCursor = Number(req.query.cursor);
+      const cursor =
+        Number.isInteger(requestedCursor) && requestedCursor > 0
+          ? requestedCursor
+          : undefined;
+
+      const where: Prisma.TaskWhereInput = {
+        user_id,
+        ...(status && { status }),
+        ...(title && { title: { contains: title } }),
+      };
+      const taskPage = await prisma.task.findMany({
+        where,
+        orderBy: { id: "asc" },
+        take: limit + 1,
+        ...(cursor && { cursor: { id: cursor }, skip: 1 }),
+      });
+      const hasMore = taskPage.length > limit;
+      const tasks = hasMore ? taskPage.slice(0, limit) : taskPage;
 
       res.json({
         message: "tasks-found",
         tasks,
+        nextCursor: hasMore ? tasks.at(-1)?.id : null,
+        hasMore,
       });
     } catch (err: any) {
       res.status(500).json({
